@@ -1,0 +1,1 @@
+cmd_/home/lukas/source/linux_kernel/hello/hello.ko := ld -r -EL -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/lukas/source/linux_kernel/hello/hello.ko /home/lukas/source/linux_kernel/hello/hello.o /home/lukas/source/linux_kernel/hello/hello.mod.o;  true

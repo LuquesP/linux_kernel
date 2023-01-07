@@ -1,0 +1,1 @@
+cmd_/home/lukas/source/linux_kernel/led/led.ko := ld -r -EL -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/lukas/source/linux_kernel/led/led.ko /home/lukas/source/linux_kernel/led/led.o /home/lukas/source/linux_kernel/led/led.mod.o;  true
