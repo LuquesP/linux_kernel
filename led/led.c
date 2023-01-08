@@ -16,35 +16,14 @@
 
 // resource for device file  
 // https://sysplay.github.io/books/LinuxDrivers/book/Content/Part05.html
+// timer im kernel 
+// https://stackoverflow.com/questions/16032228/how-to-run-while-loop-for-some-millisecond-in-linux-kernel
 
 static dev_t first; // Global variable for the first device number
 static struct cdev c_dev; // Global variable for the character device structure
 static struct class *cl; // Global variable for the device class
 
 #define DRIVER_NAME "led" 
-
-
-#define ROW_1_GPIO 1
-#define ROW_2_GPIO 2
-#define ROW_3_GPIO 3
-#define ROW_4_GPIO 4
-#define ROW_5_GPIO 12
-#define ROW_6_GPIO 11
-#define ROW_7_GPIO 10
-#define ROW_8_GPIO 9
-
-#define COL_1_GPIO 5
-#define COL_2_GPIO 6
-#define COL_3_GPIO 7
-#define COL_4_GPIO 8
-#define COL_5_GPIO 16
-#define COL_6_GPIO 15
-#define COL_7_GPIO 14
-#define COL_8_GPIO 13
-
-
-// cols = [1, 2, 3, 4, 12, 11, 10, 9] 
-// rows = [5, 6, 7, 8, 16, 15, 14, 13]
 
 unsigned int gpio_rows[] = {
         5, 
@@ -72,16 +51,6 @@ unsigned int gpio_cols[] = {
 static char command_buffer[255]; 
 static char buffer_pointer = 0; 
 
-int clear_matrix[8][8] = {
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0},
-}; 
 int up_matrix[8][8] = {
     {0, 0, 0, 1, 1, 0, 0, 0},
     {0, 0, 0, 1, 1, 0, 0, 0},
@@ -105,25 +74,25 @@ int down_matrix[8][8] = {
 };
 
 void draw_arrow(void){
-    int matrix[8][8];
-    memcpy(matrix, clear_matrix, sizeof(matrix));  
-    int row, col; 
-    ktime_t endwait;
+    int matrix[8][8] = {0};
+    // memcpy(matrix, clear_matrix, sizeof(matrix));  
+    int row, col;
+    unsigned long j0, j1, delay; 
     int seconds = 10;   
     int len_command_buffer = (int)strlen(command_buffer) - 1; 
     printk("command_buffer: %.*s\n", len_command_buffer, command_buffer); 
     if (strncmp(command_buffer, "down", len_command_buffer) == 0) {
         printk("command is down \n"); 
-        // draw_arrow(down_matrix); 
         memcpy(matrix, down_matrix, sizeof(matrix)); 
     }
     if(strncmp(command_buffer, "up", len_command_buffer) == 0){
         printk("command is up\n"); 
-        // draw_arrow(up_matrix); 
         memcpy(matrix, up_matrix, sizeof(matrix)); 
     }
-    endwait = ktime_add_ns(ktime_get(), seconds * NSEC_PER_SEC); 
-    while (ktime_get() < endwait) {
+    delay = msecs_to_jiffies(seconds * 1000 ); 
+    j0 = jiffies; 
+    j1 = j0 + delay;
+    while (time_before(jiffies, j1)) {
         for (row = 0; row < 8; row++) {
             gpio_set_value(gpio_rows[row], 1);
             for (col = 0; col < 8; col++) {
@@ -135,8 +104,6 @@ void draw_arrow(void){
             }
             gpio_set_value(gpio_rows[row], 0);
         }
-        // if(strncmp(command_buffer, "exit", len_command_buffer) == 0) 
-        //     break; 
     }
 }
 static ssize_t my_write(struct file *f, const char *user_buffer, size_t count,

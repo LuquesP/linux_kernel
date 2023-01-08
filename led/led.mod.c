@@ -40,14 +40,14 @@ __used __section("__versions") = {
 	{ 0x6091b333, "unregister_chrdev_region" },
 	{ 0xcfffe6ec, "__class_create" },
 	{ 0xe3ec2f2b, "alloc_chrdev_region" },
-	{ 0x5f754e5a, "memset" },
 	{ 0xae353d77, "arm_copy_from_user" },
 	{ 0x8f678b07, "__stack_chk_guard" },
 	{ 0x3ea1b6e4, "__stack_chk_fail" },
-	{ 0xb43f9365, "ktime_get" },
+	{ 0x526c3a6c, "jiffies" },
 	{ 0x9d669763, "memcpy" },
 	{ 0x84b183ae, "strncmp" },
 	{ 0x97255bdf, "strlen" },
+	{ 0x5f754e5a, "memset" },
 	{ 0x51a910c0, "arm_copy_to_user" },
 	{ 0xf08551e, "gpiod_set_raw_value" },
 	{ 0x6d44e361, "gpio_to_desc" },
@@ -58,4 +58,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "B44D84DC4E4001F4C9AE441");
+MODULE_INFO(srcversion, "B22D3EF4C1E82BA3E86B5E1");
