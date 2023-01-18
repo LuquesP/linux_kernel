@@ -21,22 +21,36 @@ GPIO.setup(14, GPIO.OUT)
 GPIO.setup(15, GPIO.OUT) 
 GPIO.setup(16, GPIO.OUT) 
 
-GPIO.output(1, False) #row 1
-GPIO.output(2, False) #row 2  
-GPIO.output(3, False) #row 3  
-GPIO.output(4, False) #row 4 
-GPIO.output(5, False) #col 1  
-GPIO.output(6, False) #col 2 
-GPIO.output(7, False) #col 3 
-GPIO.output(8, False) #col 4 
-GPIO.output(9, False) #row 8 
-GPIO.output(10, False) #row 7 
-GPIO.output(11, False) #row 6
-GPIO.output(12, False) #row 5 
-GPIO.output(13, False) #col 5 
-GPIO.output(14, False) #col 6 
-GPIO.output(15, False) #col 7 
-GPIO.output(16, False) #col 8 
+# clear_led()
+# down pin 21 
+# up pin 20 
+
+GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(19, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+while(True): 
+    input_state = GPIO.input(26)
+    print(input_state)
+    if input_state == 0: 
+        print("button pressed") 
+    time.sleep(0.5) 
+
+# GPIO.output(1, False) #row 1
+# GPIO.output(2, False) #row 2  
+# GPIO.output(3, False) #row 3  
+# GPIO.output(4, False) #row 4 
+# GPIO.output(5, False) #col 1  
+# GPIO.output(6, False) #col 2 
+# GPIO.output(7, False) #col 3 
+# GPIO.output(8, False) #col 4 
+# GPIO.output(9, False) #row 8 
+# GPIO.output(10, False) #row 7 
+# GPIO.output(11, False) #row 6
+# GPIO.output(12, False) #row 5 
+# GPIO.output(13, False) #col 5 
+# GPIO.output(14, False) #col 6 
+# GPIO.output(15, False) #col 7 
+# GPIO.output(16, False) #col 8 
 
 
 
@@ -161,7 +175,7 @@ rows = [5, 6, 7, 8, 16, 15, 14, 13]
 #     0, 0, 0, 0, 0, 0, 0, 0, 
 # ]
 
-smile = [
+down = [
     [0, 0, 0, 1, 1, 0, 0, 0], 
     [0, 0, 0, 1, 1, 0, 0, 0], 
     [0, 0, 0, 1, 1, 0, 0, 0], 
@@ -169,6 +183,16 @@ smile = [
     [1, 0, 0, 1, 1, 0, 0, 1], 
     [0, 1, 0, 1, 1, 0, 1, 0], 
     [0, 0, 1, 0, 0, 1, 0, 0], 
+    [0, 0, 0, 1, 1, 0, 0, 0], 
+]
+up = [
+    [0, 0, 0, 1, 1, 0, 0, 0], 
+    [0, 0, 1, 1, 1, 1, 0, 0], 
+    [0, 1, 0, 1, 1, 0, 1, 0], 
+    [1, 0, 0, 1, 1, 0, 0, 1], 
+    [0, 0, 0, 1, 1, 0, 0, 0], 
+    [0, 0, 0, 1, 1, 0, 0, 0], 
+    [0, 0, 0, 1, 1, 0, 0, 0], 
     [0, 0, 0, 1, 1, 0, 0, 0], 
 ]
 # smile = [
@@ -182,18 +206,15 @@ smile = [
 #     [0, 0, 1, 1, 1, 1, 0, 0], 
 # ]
 def draw_face(matrix): 
-    while(True): 
+    while(1): 
         for row in range(8): 
             GPIO.output(rows[row], True)
-            # time.sleep(0.001)
             for col in range(8): 
                 if matrix[row][col] == 1: 
                     GPIO.output(cols[col], False)
                 else: 
                     GPIO.output(cols[col], True)
             GPIO.output(rows[row], False) 
-            # clear_led() 
-                # time.sleep(0.1)
 
 
 #     while(True):  
@@ -244,6 +265,7 @@ def show_letter(letter):
 # turn_all_on()     
 # show_letter("A")
 # while(True): 
-draw_face(smile) 
-# clear_led() 
+# draw_face(down) 
+# draw_face(up) 
+clear_led() 
 print("hello world!") 

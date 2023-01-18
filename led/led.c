@@ -12,16 +12,18 @@
 #include <linux/uaccess.h>
 #include <linux/string.h>
 #include <linux/ktime.h>  
-
+#include <linux/ctype.h> 
 
 // resource for device file  
 // https://sysplay.github.io/books/LinuxDrivers/book/Content/Part05.html
+// https://github.com/Johannes4Linux/Linux_Driver_Tutorial
 // timer im kernel 
 // https://stackoverflow.com/questions/16032228/how-to-run-while-loop-for-some-millisecond-in-linux-kernel
 
-static dev_t first; // Global variable for the first device number
-static struct cdev c_dev; // Global variable for the character device structure
-static struct class *cl; // Global variable for the device class
+
+static dev_t first; // Global variable für die device number
+static struct cdev c_dev; // Global variable für das character device structur
+static struct class *cl; // Global variable für die device class
 
 #define DRIVER_NAME "led" 
 
@@ -75,18 +77,16 @@ int down_matrix[8][8] = {
 
 void draw_arrow(void){
     int matrix[8][8] = {0};
-    // memcpy(matrix, clear_matrix, sizeof(matrix));  
     int row, col;
     unsigned long j0, j1, delay; 
     int seconds = 10;   
     int len_command_buffer = (int)strlen(command_buffer) - 1; 
-    printk("command_buffer: %.*s\n", len_command_buffer, command_buffer); 
     if (strncmp(command_buffer, "down", len_command_buffer) == 0) {
         printk("command is down \n"); 
         memcpy(matrix, down_matrix, sizeof(matrix)); 
     }
     if(strncmp(command_buffer, "up", len_command_buffer) == 0){
-        printk("command is up\n"); 
+        printk("command is up \n"); 
         memcpy(matrix, up_matrix, sizeof(matrix)); 
     }
     delay = msecs_to_jiffies(seconds * 1000 ); 
@@ -106,7 +106,7 @@ void draw_arrow(void){
         }
     }
 }
-static ssize_t my_write(struct file *f, const char *user_buffer, size_t count,
+static ssize_t write(struct file *f, const char *user_buffer, size_t count,
     loff_t *off)
 {
     int to_copy, not_copied, delta; 
@@ -121,13 +121,11 @@ static ssize_t my_write(struct file *f, const char *user_buffer, size_t count,
     delta = to_copy - not_copied; 
 
     draw_arrow();
-
-
     return delta; 
 
 }
 
-static ssize_t my_read(struct file *f, char *user_buffer, size_t count, loff_t *off)
+static ssize_t read(struct file *f, char *user_buffer, size_t count, loff_t *off)
 {
     int to_copy, not_copied, delta; 
     
@@ -143,12 +141,12 @@ static ssize_t my_read(struct file *f, char *user_buffer, size_t count, loff_t *
 
 
 }
-static int my_open(struct inode *i, struct file *f)
+static int open(struct inode *i, struct file *f)
 {
     printk(KERN_INFO "Driver: open()\n");
     return 0;
 }
-static int my_close(struct inode *i, struct file *f)
+static int close(struct inode *i, struct file *f)
 {
     printk(KERN_INFO "Driver: close()\n");
     return 0;
@@ -156,10 +154,10 @@ static int my_close(struct inode *i, struct file *f)
 static struct file_operations pugs_fops =
 {
     .owner = THIS_MODULE,
-    .open = my_open,
-    .release = my_close,
-    .read = my_read,
-    .write = my_write
+    .open = open,
+    .release = close,
+    .read = read,
+    .write = write
 };
 
 
@@ -240,7 +238,6 @@ static void __exit led_matrix_exit(void)
         gpio_free(gpio_rows[i]); 
         gpio_free(gpio_cols[i]); 
     }
-  // Turn off all LEDs before exiting
   cdev_del(&c_dev);
   device_destroy(cl, first);
   class_destroy(cl);
@@ -252,5 +249,5 @@ module_init(led_matrix_init);
 module_exit(led_matrix_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Your Name");
-MODULE_DESCRIPTION("A kernel module to control an 8"); 
+MODULE_AUTHOR("Lukas Pilsl ");
+MODULE_DESCRIPTION("Ein Kernle Modul zum ansteuern einer LED Matrix"); 

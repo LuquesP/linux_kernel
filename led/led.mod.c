@@ -46,6 +46,7 @@ __used __section("__versions") = {
 	{ 0x526c3a6c, "jiffies" },
 	{ 0x9d669763, "memcpy" },
 	{ 0x84b183ae, "strncmp" },
+	{ 0x11089ac7, "_ctype" },
 	{ 0x97255bdf, "strlen" },
 	{ 0x5f754e5a, "memset" },
 	{ 0x51a910c0, "arm_copy_to_user" },
@@ -58,4 +59,4 @@ __used __section("__versions") = {
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "B22D3EF4C1E82BA3E86B5E1");
+MODULE_INFO(srcversion, "8D950CE9E4BA6ACDC4D863B");
